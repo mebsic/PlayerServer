@@ -1,0 +1,6 @@
+server-type: smp
+player-server-directory: /network/BungeeCord/servers/%PLAYER/server.properties
+bungee-config-location: /network/BungeeCord/config.yml
+scripts-directory: /network/BungeeCord/scripts
+whitelist-directory: /network/BungeeCord/servers/%PLAYER/whitelist.json
+ops-directory: /network/BungeeCord/servers/%PLAYER/ops.json

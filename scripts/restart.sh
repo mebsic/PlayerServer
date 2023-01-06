@@ -1,0 +1,2 @@
+./shutdown.sh
+./start.sh

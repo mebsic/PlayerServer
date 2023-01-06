@@ -1,0 +1,4 @@
+name: PlayerServer
+version: 0.1
+main: com.playground.bungee.BungeeManager
+api-version: 1.19

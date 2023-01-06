@@ -1,0 +1,11 @@
+name: PlayerServer
+version: 0.1
+main: com.playground.spigot.PlayerServer
+api-version: 1.19
+commands:
+    smp:
+    opme:
+    delete:
+    invite:
+    remove:
+    credits:
