@@ -8,9 +8,9 @@ import com.playground.spigot.commands.*;
 import com.playground.spigot.listeners.HubListener;
 import com.playground.spigot.listeners.ProcessListener;
 import com.playground.sql.MySQL;
-import com.playground.sql.managers.SQLInviteManager;
-import com.playground.sql.managers.SQLPlayerManager;
-import com.playground.sql.managers.SQLPortManager;
+import com.playground.sql.managers.spigot.SQLInviteManager;
+import com.playground.sql.managers.spigot.SQLServerManager;
+import com.playground.sql.managers.spigot.SQLPortManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,9 +31,9 @@ import java.util.logging.Level;
 public class PlayerServer extends JavaPlugin {
 
     public String serverType, playerServerDirectory, bungeeConfigLocation, scriptsDirectory, whitelistDirectory, opsDirectory;
-    public SQLPlayerManager sqlPlayerManager;
-    public SQLPortManager sqlPortManager;
     public SQLInviteManager sqlInviteManager;
+    public SQLServerManager sqlServerManager;
+    public SQLPortManager sqlPortManager;
     public static PlayerServer instance;
     public FileConfiguration mysqlYml;
     public static UUID serverName;
@@ -44,6 +44,7 @@ public class PlayerServer extends JavaPlugin {
         instance = this;
         loadConfigs();
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        getDatabaseConfigProperties();
 
         if (serverType.equalsIgnoreCase("lobby")) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:add");
@@ -93,8 +94,8 @@ public class PlayerServer extends JavaPlugin {
         return mysqlYml;
     }
 
-    public SQLPlayerManager getSqlPlayerManager() {
-        return sqlPlayerManager;
+    public SQLServerManager getSqlPlayerManager() {
+        return sqlServerManager;
     }
 
     public SQLPortManager getSqlPortManager() {
@@ -113,7 +114,7 @@ public class PlayerServer extends JavaPlugin {
     private void connectToDatabase() {
         this.SQL = new MySQL();
         this.sqlPortManager = new SQLPortManager(this);
-        this.sqlPlayerManager = new SQLPlayerManager(this);
+        this.sqlServerManager = new SQLServerManager(this);
         this.sqlInviteManager = new SQLInviteManager(this);
 
         try {
@@ -153,6 +154,15 @@ public class PlayerServer extends JavaPlugin {
             saveResource("mysql.yml", false);
         }
         mysqlYml = YamlConfiguration.loadConfiguration(mysql);
+    }
+
+    private void getDatabaseConfigProperties() {
+        MySQL.host = getCustomConfig().getString("host");
+        MySQL.port = getCustomConfig().getString("port");
+        MySQL.database = getCustomConfig().getString("database");
+        MySQL.username = getCustomConfig().getString("username");
+        MySQL.password = getCustomConfig().getString("password");
+        MySQL.useSSL = getCustomConfig().getBoolean("useSSL");
     }
 
     public void sendPlayer(final Player p, final String server, final int ticks) {

@@ -1,24 +1,24 @@
-package com.playground.sql.managers;
+package com.playground.sql.managers.spigot;
 
 import com.playground.spigot.PlayerServer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
-public class SQLInviteManager {
+public class SQLPortManager {
 
+    private final int DEFAULT_PORT = 25566;
     private final PlayerServer plugin;
 
-    public SQLInviteManager(PlayerServer plugin) {
+    public SQLPortManager(PlayerServer plugin) {
         this.plugin = plugin;
     }
 
-    public void createInvitesTable() {
+    public void createCurrentPortTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS invites(id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100), server VARCHAR(100), PRIMARY KEY(id))");
+            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS current_port(port INT UNSIGNED, PRIMARY KEY (port))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,19 +33,45 @@ public class SQLInviteManager {
         }
     }
 
-    public void addPlayer(UUID uuid, UUID server) {
+    public void insertDefaultPort() {
         PreparedStatement ps = null;
 
-        if (!exists(uuid, server)) {
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO current_port(port) VALUES(?)");
+            ps.setInt(1, DEFAULT_PORT);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
             try {
-                ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO invites(uuid, server) VALUES (?, ?)");
-                ps.setString(1, uuid.toString());
-                ps.setString(2, server.toString());
-                ps.executeUpdate();
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public int getCurrentPort() {
+        int port = DEFAULT_PORT;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        if (exists()) {
+            try {
+                ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM current_port");
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    port = rs.getInt(1);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
                 try {
+                    if (rs != null) {
+                        rs.close();
+                    }
                     if (ps != null) {
                         ps.close();
                     }
@@ -53,21 +79,23 @@ public class SQLInviteManager {
                     ex.printStackTrace();
                 }
             }
+        } else {
+            insertDefaultPort();
         }
+
+        return port;
     }
 
-    public boolean exists(UUID uuid, UUID server) {
-        boolean isPlayerCreated = false;
+    private boolean exists() {
+        boolean isDefaultPortAdded = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM invites WHERE uuid=? AND server=?");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, server.toString());
+            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM current_port");
             rs = ps.executeQuery();
             if (rs.next()) {
-                isPlayerCreated = true;
+                isDefaultPortAdded = true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,16 +112,15 @@ public class SQLInviteManager {
             }
         }
 
-        return isPlayerCreated;
+        return isDefaultPortAdded;
     }
 
-    public void removePlayer(UUID uuid, UUID server) {
+    public int updateCurrentPort() {
+        int port = getCurrentPort() + 1;
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("DELETE FROM invites WHERE uuid=? AND server=?");
-            ps.setString(1, uuid.toString());
-            ps.setString(2, server.toString());
+            ps = plugin.SQL.getConnection().prepareStatement("UPDATE current_port SET port=" + port);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,5 +133,7 @@ public class SQLInviteManager {
                 ex.printStackTrace();
             }
         }
+
+        return port;
     }
 }

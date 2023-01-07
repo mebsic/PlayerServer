@@ -1,24 +1,47 @@
-package com.playground.sql.managers;
+package com.playground.sql.managers.bungee;
 
-import com.playground.spigot.PlayerServer;
+import com.playground.bungee.BungeeManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLPortManager {
+public class SQLMaintenanceManager {
 
-    private final int DEFAULT_PORT = 25566;
-    private final PlayerServer plugin;
+    private final BungeeManager plugin;
 
-    public SQLPortManager(PlayerServer plugin) {
+    public SQLMaintenanceManager(BungeeManager plugin) {
         this.plugin = plugin;
     }
 
-    public void createCurrentPortTable() {
+    public void createMaintenanceTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS current_port(port INT UNSIGNED, PRIMARY KEY (port))");
+            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS maintenance(enabled BOOLEAN, PRIMARY KEY (enabled))");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (!exists()) {
+            setDefaultMaintenanceState();
+        }
+    }
+
+    public void setDefaultMaintenanceState() {
+        PreparedStatement ps = null;
+
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO maintenance(enabled) VALUES(?)");
+            ps.setBoolean(1, false);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,12 +56,11 @@ public class SQLPortManager {
         }
     }
 
-    public void insertDefaultPort() {
+    public void setEnabled(boolean enabled) {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO current_port(port) VALUES(?)");
-            ps.setInt(1, DEFAULT_PORT);
+            ps = plugin.SQL.getConnection().prepareStatement("UPDATE maintenance SET enabled=" + enabled);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,51 +73,18 @@ public class SQLPortManager {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public int getCurrentPort() {
-        int port = DEFAULT_PORT;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        if (exists()) {
-            try {
-                ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM current_port");
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    port = rs.getInt(1);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (rs != null) {
-                        rs.close();
-                    }
-                    if (ps != null) {
-                        ps.close();
-                    }
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        } else {
-            insertDefaultPort();
-        }
-
-        return port;
     }
 
     private boolean exists() {
-        boolean isDefaultPortAdded = false;
+        boolean isDefaultMaintenanceStateAdded = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM current_port");
+            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM maintenance");
             rs = ps.executeQuery();
             if (rs.next()) {
-                isDefaultPortAdded = true;
+                isDefaultMaintenanceStateAdded = true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,20 +101,27 @@ public class SQLPortManager {
             }
         }
 
-        return isDefaultPortAdded;
+        return isDefaultMaintenanceStateAdded;
     }
 
-    public int updateCurrentPort() {
-        int port = getCurrentPort() + 1;
+    public boolean isEnabled() {
+        boolean isEnabled = false;
         PreparedStatement ps = null;
+        ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("UPDATE current_port SET port=" + port);
-            ps.executeUpdate();
+            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM maintenance");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                isEnabled = rs.getBoolean(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
+                if (rs != null) {
+                    rs.close();
+                }
                 if (ps != null) {
                     ps.close();
                 }
@@ -134,6 +130,6 @@ public class SQLPortManager {
             }
         }
 
-        return port;
+        return isEnabled;
     }
 }

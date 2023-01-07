@@ -1,18 +1,18 @@
 package com.playground.sql;
 
-import com.playground.spigot.PlayerServer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MySQL {
 
-    private final String host = PlayerServer.getInstance().getCustomConfig().getString("host");
-    private final String port = PlayerServer.getInstance().getCustomConfig().getString("port");
-    private final String database = PlayerServer.getInstance().getCustomConfig().getString("database");
-    private final String username = PlayerServer.getInstance().getCustomConfig().getString("username");
-    private final String password = PlayerServer.getInstance().getCustomConfig().getString("password");
-    private final boolean useSSL = PlayerServer.getInstance().getCustomConfig().getBoolean("useSSL");
+    public static String host;
+    public static String port;
+    public static String database;
+    public static String username;
+    public static String password;
+    public static boolean useSSL;
+
     private Connection connection;
     private final String connectionURL = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=" + useSSL;
 

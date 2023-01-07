@@ -22,9 +22,9 @@ public class CreditsCMD implements CommandExecutor {
                     Player player = Bukkit.getPlayerExact(args[0]);
 
                     if (player != null && player.isOnline()) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aNow playing end credits for " + args[0] + "!"));
                         PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1);
                         ((CraftPlayer) player).getHandle().b.a(packet);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aNow playing end credits for " + args[0] + "!"));
                     } else {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c" + args[0] + " was not found! Please try again."));
                     }
