@@ -3,35 +3,139 @@ package com.playground.bungee;
 import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.playground.bungee.commands.MaintenanceCMD;
+import com.playground.bungee.commands.WhitelistCMD;
+import com.playground.sql.MySQL;
+import com.playground.sql.managers.bungee.SQLMaintenanceManager;
+import com.playground.sql.managers.bungee.SQLWhitelistManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @SuppressWarnings("deprecation")
 public class BungeeManager extends Plugin implements Listener {
 
     private final String sendFallbackServerFailedMessage = "\n\n&cCould not send you to a fallback server!\nTo play again, please reconnect to &bexample.com";
+    public SQLMaintenanceManager sqlMaintenanceManager;
+    public SQLWhitelistManager sqlWhitelistManager;
+    public Configuration sqlConfig, motdConfig;
     public static Plugin instance;
+    public MySQL SQL;
 
     @Override
     public void onEnable() {
         instance = this;
+        loadConfigs();
+        connectToDatabase();
+
         getProxy().registerChannel("bungeecord:ping");
         getProxy().registerChannel("bungeecord:add");
         getProxy().registerChannel("bungeecord:remove");
         getProxy().getPluginManager().registerListener(this, this);
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new MaintenanceCMD());
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new WhitelistCMD());
+    }
+
+    @Override
+    public void onDisable() {
+        disconnectFromDatabase();
+    }
+
+    private void loadConfigs() {
+        sqlConfig = loadUniqueConfig("mysql.yml");
+        motdConfig = loadUniqueConfig("motd.yml");
+        getDatabaseConfigProperties();
+    }
+
+    private Configuration loadUniqueConfig(String filename) {
+        Configuration config = null;
+
+        try {
+            File configFile = new File(getDataFolder(), filename);
+            if (!configFile.exists()) {
+                getDataFolder().mkdir();
+                Files.copy(this.getResourceAsStream(filename), configFile.toPath());
+            }
+
+            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), filename));
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, new File(getDataFolder(), filename));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return config;
+    }
+
+    private void getDatabaseConfigProperties() {
+        MySQL.host = getCustomSqlConfig().getString("host");
+        MySQL.port = getCustomSqlConfig().getString("port");
+        MySQL.database = getCustomSqlConfig().getString("database");
+        MySQL.username = getCustomSqlConfig().getString("username");
+        MySQL.password = getCustomSqlConfig().getString("password");
+        MySQL.useSSL = getCustomSqlConfig().getBoolean("useSSL");
+    }
+
+    public Configuration getCustomMotdConfig() {
+        return motdConfig;
+    }
+
+    public Configuration getCustomSqlConfig() {
+        return sqlConfig;
+    }
+
+    public static BungeeManager getInstance() {
+        return (BungeeManager) instance;
+    }
+
+    public SQLMaintenanceManager getSqlMaintenanceManager() {
+        return sqlMaintenanceManager;
+    }
+
+    public SQLWhitelistManager getSqlWhitelistManager() {
+        return sqlWhitelistManager;
+    }
+
+    private void disconnectFromDatabase() {
+        SQL.disconnect();
+    }
+
+    private void connectToDatabase() {
+        this.SQL = new MySQL();
+        this.sqlMaintenanceManager = new SQLMaintenanceManager(this);
+        this.sqlWhitelistManager = new SQLWhitelistManager(this);
+
+        try {
+            SQL.connect();
+        } catch (ClassNotFoundException | SQLException e) {
+            getLogger().log(Level.SEVERE, "Cannot connect to database!");
+        }
+
+        if (SQL.isConnected()) {
+            getLogger().log(Level.INFO, "Connected to database!");
+            getSqlMaintenanceManager().createMaintenanceTable();
+            getSqlWhitelistManager().createWhitelistTable();
+        }
     }
 
     @EventHandler
@@ -87,20 +191,40 @@ public class BungeeManager extends Plugin implements Listener {
     }
 
     @EventHandler
-    public void onConnect(ServerConnectEvent e) {
-        UUID uuid = null;
-        try {
-            uuid = getUUID(e.getPlayer().getName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public void onPing(ProxyPingEvent e) {
+        ServerPing ping = e.getResponse();
+
+        if (getSqlMaintenanceManager().isEnabled()) {
+            ping.setDescription(ChatColor.translateAlternateColorCodes('&', "&cMaintenance mode"));
+            ping.setVersion(new ServerPing.Protocol(ChatColor.translateAlternateColorCodes('&', "&4Maintenance"), ping.getVersion().getProtocol() - 5));
+        } else {
+            motdConfig = loadUniqueConfig("motd.yml");
+            ping.setDescription(ChatColor.translateAlternateColorCodes('&', getCustomMotdConfig().getString("header") + "\n" + getCustomMotdConfig().getString("footer")));
         }
 
-        if (!e.getPlayer().getUniqueId().toString().equals(uuid.toString())) {
-            e.getPlayer().disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', "&cInvalid login!")));
+        e.setResponse(ping);
+    }
+
+    @EventHandler
+    public void onConnect(ServerConnectEvent e) {
+        UUID uuid = null;
+
+        if (getSqlMaintenanceManager().isEnabled() && !getSqlWhitelistManager().exists(e.getPlayer().getUniqueId())) {
+            e.getPlayer().disconnect(ChatColor.translateAlternateColorCodes('&', "&6This server is currently in maintenance mode!"));
+        } else {
+            try {
+                uuid = findPlayer(e.getPlayer().getName());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            if (uuid != null && !e.getPlayer().getUniqueId().toString().equals(uuid.toString())) {
+                e.getPlayer().disconnect(ChatColor.translateAlternateColorCodes('&', "&cInvalid login!"));
+            }
         }
     }
 
-    private UUID getUUID(String s) throws Exception {
+    public UUID findPlayer(String s) throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://api.mojang.com/users/profiles/minecraft/" + s).openStream()));
         final String uuid = (((JsonObject) new JsonParser().parse(in)).get("id")).toString().replaceAll("\"", "");
         final String realUUID = uuid.substring(0, 8) + "-" + uuid.substring(8, 12) + "-" + uuid.substring(12, 16) + "-" + uuid.substring(16, 20) + "-" + uuid.substring(20, 32);

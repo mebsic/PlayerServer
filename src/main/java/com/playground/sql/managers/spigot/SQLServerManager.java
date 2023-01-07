@@ -1,4 +1,4 @@
-package com.playground.sql.managers;
+package com.playground.sql.managers.spigot;
 
 import com.playground.spigot.PlayerServer;
 import java.sql.PreparedStatement;
@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class SQLPlayerManager {
+public class SQLServerManager {
 
     private final PlayerServer plugin;
 
-    public SQLPlayerManager(PlayerServer plugin) {
+    public SQLServerManager(PlayerServer plugin) {
         this.plugin = plugin;
     }
 
@@ -58,7 +58,7 @@ public class SQLPlayerManager {
     }
 
     public boolean exists(UUID uuid) {
-        boolean isPlayerCreated = false;
+        boolean isServerCreated = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -67,7 +67,7 @@ public class SQLPlayerManager {
             ps.setString(1, uuid.toString());
             rs = ps.executeQuery();
             if (rs.next()) {
-                isPlayerCreated = true;
+                isServerCreated = true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,7 +84,7 @@ public class SQLPlayerManager {
             }
         }
 
-        return isPlayerCreated;
+        return isServerCreated;
     }
 
     public int getPort(UUID uuid) {
