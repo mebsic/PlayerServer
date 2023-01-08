@@ -52,7 +52,6 @@ public class PlayerServer extends JavaPlugin {
             getCommand("smp").setExecutor(new ServerCMD(this));
             getCommand("delete").setExecutor(new DeleteCMD());
             Bukkit.getPluginManager().registerEvents(new HubListener(), this);
-            connectToDatabase();
         } else if (serverType.equalsIgnoreCase("smp")) {
             getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:ping");
             serverName = UUID.fromString(Paths.get(Bukkit.getWorldContainer().getAbsolutePath()).getParent().getFileName().toString());
@@ -62,11 +61,11 @@ public class PlayerServer extends JavaPlugin {
             getCommand("remove").setExecutor(new RemoveCMD());
             getCommand("credits").setExecutor(new CreditsCMD());
             checkForShutdown();
-            connectToDatabase();
         } else {
             Bukkit.getLogger().log(Level.SEVERE, "Invalid configuration!");
             getServer().shutdown();
         }
+        connectToDatabase();
     }
 
     @Override
@@ -75,11 +74,10 @@ public class PlayerServer extends JavaPlugin {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 HubListener.endProcessInterruptedStart(p);
             }
-            disconnectAndSave();
         } else if (serverType.equalsIgnoreCase("smp")) {
             getSqlPlayerManager().setOnline(getServerName(), false);
-            disconnectAndSave();
         }
+        disconnectAndSave();
     }
 
     public static PlayerServer getInstance() {
