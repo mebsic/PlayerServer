@@ -31,7 +31,7 @@ public class WhitelistCMD extends Command {
 
                     if (uuid != null && !BungeeManager.getInstance().getSqlWhitelistManager().exists(uuid)) {
                         BungeeManager.getInstance().getSqlWhitelistManager().addPlayer(uuid);
-                        sender.sendMessage(new ComponentBuilder(args[0] + " has been added to the maintenance whitelist!").color(ChatColor.GREEN).create());
+                        ProxyServer.getInstance().broadcast(new ComponentBuilder(args[0] + " has been added to the maintenance whitelist!").color(ChatColor.GREEN).create());
                     } else if (uuid != null && BungeeManager.getInstance().getSqlWhitelistManager().exists(uuid)) {
                         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                         BungeeManager.getInstance().getSqlWhitelistManager().removePlayer(uuid);
@@ -39,7 +39,7 @@ public class WhitelistCMD extends Command {
                         if (player != null && player.isConnected()) {
                             player.disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', "&cYou were removed from the maintenance whitelist!")));
                         }
-                        sender.sendMessage(new ComponentBuilder(args[0] + " was removed from the maintenance whitelist!").color(ChatColor.RED).create());
+                        ProxyServer.getInstance().broadcast(new ComponentBuilder(args[0] + " was removed from the maintenance whitelist!").color(ChatColor.RED).create());
                     } else {
                         sender.sendMessage(new ComponentBuilder(args[0] + " was not found! Please try again.").color(ChatColor.RED).create());
                     }

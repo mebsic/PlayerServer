@@ -25,10 +25,10 @@ public class MaintenanceCMD extends Command {
                         p.disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', "&6Maintenance mode is now enabled!")));
                     }
                 }
-                sender.sendMessage(new ComponentBuilder("Maintenance mode is now enabled!").color(ChatColor.GREEN).create());
+                ProxyServer.getInstance().broadcast(new ComponentBuilder("Maintenance mode is now enabled!").color(ChatColor.GOLD).create());
             } else {
                 BungeeManager.getInstance().getSqlMaintenanceManager().setEnabled(false);
-                sender.sendMessage(new ComponentBuilder("Maintenance mode is now disabled!").color(ChatColor.RED).create());
+                ProxyServer.getInstance().broadcast(new ComponentBuilder("Maintenance mode is now disabled!").color(ChatColor.RED).create());
             }
         } else {
             ProxiedPlayer player = (ProxiedPlayer) sender;
