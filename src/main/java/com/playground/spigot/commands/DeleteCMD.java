@@ -22,7 +22,7 @@ public class DeleteCMD implements CommandExecutor {
                     p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"), 0, 60, 10);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"));
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou cannot delete your SMP while the server is starting!"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou cannot delete your SMP while the server is running!"));
                 }
             } else {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have an SMP! Create a server using &b/smp"));

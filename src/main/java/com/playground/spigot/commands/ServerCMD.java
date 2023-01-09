@@ -47,7 +47,7 @@ public class ServerCMD implements CommandExecutor {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP is already online, teleporting you..."));
                     }
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour SMP is already starting or online! You will be sent automatically when the server is available."));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour SMP is already running! You will be sent automatically when the server is available."));
                 }
             }
         } else {
