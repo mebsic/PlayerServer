@@ -1,5 +1,6 @@
 package com.playground.spigot;
 
+import com.playground.spigot.commands.ServerCMD;
 import com.playground.spigot.listeners.HubListener;
 import com.google.common.base.Charsets;
 import org.bukkit.Bukkit;
@@ -111,7 +112,7 @@ public class ServerMonitor {
                                     status.putIfAbsent(p.getUniqueId(), ServerStatus.STARTING);
                                     String playerID = p.getUniqueId().toString();
                                     Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/startserver.sh " + playerID);
-                                    joinServerAfterCreate(p, getPlayerPort(p.getUniqueId()));
+                                    joinServerAfterStart(p, getPlayerPort(p.getUniqueId()), 3600, 3600);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -159,7 +160,7 @@ public class ServerMonitor {
                         PlayerServer.getInstance().getSqlPlayerManager().setOnline(p.getUniqueId(), false);
                     }
                     Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/startserver.sh " + playerID);
-                    joinServerAfterStart(p, getPlayerPort(p.getUniqueId()));
+                    joinServerAfterStart(p, getPlayerPort(p.getUniqueId()), 1800, 1800);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -167,7 +168,7 @@ public class ServerMonitor {
         }.runTaskLaterAsynchronously(PlayerServer.getInstance(), 20);
     }
 
-    private void joinServerAfterCreate(Player p, int port) {
+    private void joinServerAfterStart(Player p, int port, long delay, long period) {
 
         connectionAttempts.put(p.getUniqueId(), 0);
         final int id = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(PlayerServer.getInstance(), () -> {
@@ -181,7 +182,11 @@ public class ServerMonitor {
 
             if (!online && (attempts >= 1 && attempts <= 5)) {
                 p.resetTitle();
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, 72000, 10);
+                if (newServerCooldown.contains(p)) {
+                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, 72000, 10);
+                } else {
+                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
+                }
             } else if (online && (attempts >= 1 && attempts <= 5)) {
                 status.remove(p.getUniqueId());
                 PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 20);
@@ -191,35 +196,7 @@ public class ServerMonitor {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed to join your SMP! Please try again later."));
                 HubListener.endProcessInterruptedStart(p);
             }
-        }, 3600, 3600);
-        taskID.putIfAbsent(p.getUniqueId(), id);
-    }
-
-    private void joinServerAfterStart(Player p, int port) {
-
-        connectionAttempts.put(p.getUniqueId(), 0);
-        final int id = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(PlayerServer.getInstance(), () -> {
-            boolean online = false;
-            int attempts;
-
-            if (isServerOnline(p.getUniqueId(), port)) {
-                online = true;
-            }
-            attempts = connectionAttempts.computeIfPresent(p.getUniqueId(), (k, v) -> v + 1);
-
-            if (!online && (attempts >= 1 && attempts <= 5)) {
-                p.resetTitle();
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
-            } else if (online && (attempts >= 1 && attempts <= 5)) {
-                status.remove(p.getUniqueId());
-                PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 20);
-            } else {
-                p.resetTitle();
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&cFailed to join your SMP!"), 0, 60, 10);
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed to join your SMP! Please try again later."));
-                HubListener.endProcessInterruptedStart(p);
-            }
-        }, 1800, 1800);
+        }, delay, period);
         taskID.putIfAbsent(p.getUniqueId(), id);
     }
 }
