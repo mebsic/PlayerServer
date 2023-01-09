@@ -179,19 +179,20 @@ public class ServerMonitor {
             }
             attempts = connectionAttempts.computeIfPresent(p.getUniqueId(), (k, v) -> v + 1);
 
-            if (!online && (attempts >= 1 && attempts <= 5)) {
+            if (!online && attempts == 1) {
                 p.resetTitle();
-                if (newServerCooldown.contains(p)) {
-                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, 72000, 10);
-                } else {
-                    p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
-                }
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."), 0, 72000, 10);
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."));
+            } else if (!online && (attempts >= 2 && attempts <= 5)) {
+                p.resetTitle();
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP again..."), 0, 72000, 10);
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP again..."));
             } else if (online && (attempts >= 1 && attempts <= 5)) {
                 status.remove(p.getUniqueId());
                 PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 20);
             } else {
                 p.resetTitle();
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&cFailed to join your SMP!"), 0, 60, 10);
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&cFailed to join your SMP!"), 0, 60, 10);
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed to join your SMP! Please try again later."));
                 HubListener.endProcessInterruptedStart(p);
             }
