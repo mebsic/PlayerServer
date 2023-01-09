@@ -28,7 +28,7 @@ public class ServerCMD implements CommandExecutor {
                 commandCooldown.add(p);
                 ServerMonitor.getInstance().addBungeeServer(p);
                 p.resetTitle();
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, 72000, 10);
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, 72000, 10);
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."));
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThis may take a few minutes, please wait..."));
             } else {
@@ -37,17 +37,17 @@ public class ServerCMD implements CommandExecutor {
                         commandCooldown.add(p);
                         ServerMonitor.getInstance().startServer(p);
                         p.resetTitle();
-                        p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
+                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP, please wait..."));
                     } else {
                         commandCooldown.add(p);
                         PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 60);
                         p.resetTitle();
-                        p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&aTeleporting..."), 0, 60, 10);
+                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aTeleporting..."), 0, 60, 10);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP is already online, teleporting you..."));
                     }
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour SMP is already running! You will be teleported when the server is available."));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour SMP is already loading! You will be teleported when the server is available."));
                 }
             }
         } else {

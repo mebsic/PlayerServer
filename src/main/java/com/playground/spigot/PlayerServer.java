@@ -168,7 +168,7 @@ public class PlayerServer extends JavaPlugin {
             @Override
             public void run() {
                 p.resetTitle();
-                p.sendTitle(ChatColor.translateAlternateColorCodes('&', ""), ChatColor.translateAlternateColorCodes('&', "&7Joining SMP..."), 0, 72000, 10);
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Joining SMP..."), 0, 72000, 10);
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Joining SMP..."));
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();
                 out.writeUTF("Connect");
