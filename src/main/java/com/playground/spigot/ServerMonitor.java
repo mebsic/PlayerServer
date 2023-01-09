@@ -1,6 +1,5 @@
 package com.playground.spigot;
 
-import com.playground.spigot.commands.ServerCMD;
 import com.playground.spigot.listeners.HubListener;
 import com.google.common.base.Charsets;
 import org.bukkit.Bukkit;
