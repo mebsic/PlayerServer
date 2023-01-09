@@ -158,7 +158,7 @@ public class HubListener implements Listener {
                 || e.getMessage().startsWith("/playerserver:smp")
                 || e.getMessage().startsWith("/playerserver:delete"))) {
             e.setCancelled(true);
-            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour SMP is still being created! Please wait before running other commands."));
+            e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour SMP is being created! Please wait before running commands."));
         }
     }
 
