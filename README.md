@@ -1,7 +1,8 @@
 ## PlayerServer
-An open-source spigot plugin that can automatically deploy and manage a private Survival Multiplayer (SMP) server in Minecraft
+An open-source spigot plugin that automatically deploys and manages private servers in Minecraft. This plugin creates a Survival Multiplayer (SMP) Minecraft server from a template server folder
 <br><br>
-:warning: <b>Warning:</b> This plugin requires a BungeeCord network and MySQL database hosted on a VPS or dedicated server running Linux
+:warning: <b>Warning:</b><br>
+This plugin requires a BungeeCord network and MySQL database hosted on a VPS or dedicated server running Linux
 
 ### Features
 #### Spigot
@@ -10,7 +11,7 @@ An open-source spigot plugin that can automatically deploy and manage a private 
     MySQL database support
   </li>
   <li>
-    Create an SMP from a template folder
+    Create a server from a template folder
   </li>
   <li>
     Start the server
