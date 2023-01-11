@@ -49,9 +49,9 @@ public class BungeeManager extends Plugin implements Listener {
         loadConfigs();
         connectToDatabase();
 
-        getProxy().registerChannel("bungeecord:ping");
-        getProxy().registerChannel("bungeecord:add");
-        getProxy().registerChannel("bungeecord:remove");
+        getProxy().registerChannel("bungeecord:add_server");
+        getProxy().registerChannel("bungeecord:remove_server");
+        getProxy().registerChannel("bungeecord:uninvite_player");
         getProxy().getPluginManager().registerListener(this, this);
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new MaintenanceCMD());
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new WhitelistCMD());
@@ -140,7 +140,7 @@ public class BungeeManager extends Plugin implements Listener {
 
     @EventHandler
     public void onPluginMessageConstructServerInfo(PluginMessageEvent e) {
-        if (!e.getTag().equalsIgnoreCase("bungeecord:add")) {
+        if (!e.getTag().equalsIgnoreCase("bungeecord:add_server")) {
             return;
         }
         if (e.getReceiver() instanceof ProxiedPlayer) {
@@ -153,7 +153,7 @@ public class BungeeManager extends Plugin implements Listener {
 
     @EventHandler
     public void onPluginMessageDeconstructServerInfo(PluginMessageEvent e) {
-        if (!e.getTag().equalsIgnoreCase("bungeecord:remove")) {
+        if (!e.getTag().equalsIgnoreCase("bungeecord:remove_server")) {
             return;
         }
         if (e.getReceiver() instanceof ProxiedPlayer) {
@@ -169,7 +169,7 @@ public class BungeeManager extends Plugin implements Listener {
 
     @EventHandler
     public void onPluginMessageRemovePlayerFromSMP(PluginMessageEvent e) {
-        if (!e.getTag().equalsIgnoreCase("bungeecord:ping")) {
+        if (!e.getTag().equalsIgnoreCase("bungeecord:uninvite_player")) {
             return;
         }
         if (e.getReceiver() instanceof ProxiedPlayer) {

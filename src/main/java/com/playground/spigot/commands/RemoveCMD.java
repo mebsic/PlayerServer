@@ -53,7 +53,7 @@ public class RemoveCMD implements CommandExecutor {
         Player removedPlayer = Bukkit.getPlayer(uuid);
 
         if (removedPlayer != null) {
-            removedPlayer.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:ping", playerRemovedMessage.getBytes(Charsets.UTF_8));
+            removedPlayer.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:uninvite_player", playerRemovedMessage.getBytes(Charsets.UTF_8));
         }
     }
 }

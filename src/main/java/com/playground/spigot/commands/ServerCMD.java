@@ -33,16 +33,14 @@ public class ServerCMD implements CommandExecutor {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThis may take a few minutes, please wait..."));
             } else {
                 if (!commandCooldown.contains(p)) {
+                    commandCooldown.add(p);
+                    p.resetTitle();
                     if (ServerMonitor.getInstance().isPortAvailable(ServerMonitor.getInstance().getPlayerPort(p.getUniqueId()))) {
-                        commandCooldown.add(p);
                         ServerMonitor.getInstance().startServer(p);
-                        p.resetTitle();
                         p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP, please wait..."));
                     } else {
-                        commandCooldown.add(p);
                         PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 60);
-                        p.resetTitle();
                         p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aTeleporting..."), 0, 60, 10);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP is already online, teleporting you..."));
                     }

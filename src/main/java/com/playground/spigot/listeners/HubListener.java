@@ -69,7 +69,7 @@ public class HubListener implements Listener {
         String serverDeletedMessage = "&cThe SMP you were playing on was deleted by " + p.getName() + "!";
 
         try {
-            p.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:remove", serverDeletedMessage.getBytes(Charsets.UTF_8));
+            p.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:remove_server", serverDeletedMessage.getBytes(Charsets.UTF_8));
             PlayerServer.getInstance().getSqlPlayerManager().remove(p.getUniqueId());
             Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/deleteserver.sh " + p.getUniqueId());
         } catch (IOException ex) {
