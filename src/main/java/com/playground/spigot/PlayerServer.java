@@ -47,13 +47,13 @@ public class PlayerServer extends JavaPlugin {
         getDatabaseConfigProperties();
 
         if (serverType.equalsIgnoreCase("lobby")) {
-            getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:add");
-            getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:remove");
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:add_server");
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:remove_server");
             getCommand("smp").setExecutor(new ServerCMD(this));
             getCommand("delete").setExecutor(new DeleteCMD());
             Bukkit.getPluginManager().registerEvents(new HubListener(), this);
         } else if (serverType.equalsIgnoreCase("smp")) {
-            getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:ping");
+            getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:uninvite_player");
             serverName = UUID.fromString(Paths.get(Bukkit.getWorldContainer().getAbsolutePath()).getParent().getFileName().toString());
             Bukkit.getPluginManager().registerEvents(new ProcessListener(), this);
             getCommand("opme").setExecutor(new OpmeCMD());
