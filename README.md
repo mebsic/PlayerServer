@@ -87,9 +87,7 @@ Clone the repository
 <br><br>
 Run BuildTools
 <br>
-<a href="https://www.spigotmc.org/wiki/buildtools" target="_blank">
-  https://www.spigotmc.org/wiki/buildtools
-</a>
+https://www.spigotmc.org/wiki/buildtools
 <br><br>
 Compile using `mvn clean package`
 <br><br>
