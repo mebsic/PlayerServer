@@ -15,17 +15,21 @@ public class DeleteCMD implements CommandExecutor {
         if (sender instanceof Player) {
             Player p = (Player) sender;
 
-            if (ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
-                if (!ServerCMD.commandCooldown.contains(p)) {
-                    HubListener.deleteServer(p);
-                    p.resetTitle();
-                    p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"), 0, 60, 10);
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"));
+            if (args.length == 0) {
+                if (ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
+                    if (!ServerCMD.commandCooldown.contains(p)) {
+                        HubListener.deleteServer(p);
+                        p.resetTitle();
+                        p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"), 0, 60, 10);
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"));
+                    } else {
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou cannot delete your SMP while the server is loading!"));
+                    }
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou cannot delete your SMP while the server is loading!"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have an SMP! Create a server using &b/smp"));
                 }
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have an SMP! Create a server using &b/smp"));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cInvalid command! Correct usage: &b/delete"));
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed!"));

@@ -18,17 +18,21 @@ public class MaintenanceCMD extends Command {
     public void execute(CommandSender sender, String[] args) {
 
         if (!(sender instanceof ProxiedPlayer)) {
-            if (!BungeeManager.getInstance().getSqlMaintenanceManager().isEnabled()) {
-                BungeeManager.getInstance().getSqlMaintenanceManager().setEnabled(true);
-                for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                    if (!BungeeManager.getInstance().getSqlWhitelistManager().exists(p.getUniqueId())) {
-                        p.disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', "&6Maintenance mode is now enabled!")));
+            if (args.length == 0) {
+                if (!BungeeManager.getInstance().getSqlMaintenanceManager().isEnabled()) {
+                    BungeeManager.getInstance().getSqlMaintenanceManager().setEnabled(true);
+                    for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
+                        if (!BungeeManager.getInstance().getSqlWhitelistManager().exists(p.getUniqueId())) {
+                            p.disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', "&6Maintenance mode is now enabled!")));
+                        }
                     }
+                    ProxyServer.getInstance().broadcast(new ComponentBuilder("Maintenance mode is now enabled!").color(ChatColor.GOLD).create());
+                } else {
+                    BungeeManager.getInstance().getSqlMaintenanceManager().setEnabled(false);
+                    ProxyServer.getInstance().broadcast(new ComponentBuilder("Maintenance mode is now disabled!").color(ChatColor.RED).create());
                 }
-                ProxyServer.getInstance().broadcast(new ComponentBuilder("Maintenance mode is now enabled!").color(ChatColor.GOLD).create());
             } else {
-                BungeeManager.getInstance().getSqlMaintenanceManager().setEnabled(false);
-                ProxyServer.getInstance().broadcast(new ComponentBuilder("Maintenance mode is now disabled!").color(ChatColor.RED).create());
+                sender.sendMessage(new ComponentBuilder("Invalid command! Correct usage: maintenance").color(ChatColor.RED).create());
             }
         } else {
             ProxiedPlayer player = (ProxiedPlayer) sender;
