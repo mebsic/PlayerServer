@@ -30,6 +30,7 @@ public class HubListener implements Listener {
             e.getPlayer().removePotionEffect(effect.getType());
         }
         e.setQuitMessage(null);
+        e.getPlayer().resetTitle();
         endProcessInterruptedStart(e.getPlayer());
     }
 

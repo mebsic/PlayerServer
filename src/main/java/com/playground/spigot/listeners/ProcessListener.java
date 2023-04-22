@@ -47,6 +47,7 @@ public class ProcessListener implements Listener {
 
     @EventHandler
     public void onDisconnect(PlayerQuitEvent e) {
+        e.getPlayer().resetTitle();
         PlayerServer.getInstance().checkForShutdown();
         e.setQuitMessage(ChatColor.translateAlternateColorCodes('&', "&7" + e.getPlayer().getDisplayName() + " &eleft the SMP"));
     }
