@@ -181,10 +181,10 @@ public class ServerMonitor {
             p.resetTitle();
 
             if (!online && attempts == 1) {
-                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."), 0, 72000, 10);
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."), 0, Integer.MAX_VALUE, 0);
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."));
             } else if (!online && (attempts >= 2 && attempts <= 5)) {
-                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP again..."), 0, 72000, 10);
+                p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP again..."), 0, Integer.MAX_VALUE, 0);
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP again..."));
             } else if (online && (attempts >= 1 && attempts <= 5)) {
                 status.remove(p.getUniqueId());

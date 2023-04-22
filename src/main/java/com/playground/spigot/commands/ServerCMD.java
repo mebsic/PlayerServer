@@ -29,7 +29,7 @@ public class ServerCMD implements CommandExecutor {
                     commandCooldown.add(p);
                     ServerMonitor.getInstance().addBungeeServer(p);
                     p.resetTitle();
-                    p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, 72000, 10);
+                    p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, Integer.MAX_VALUE, 0);
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."));
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aThis may take a few minutes, please wait..."));
                 } else {
@@ -38,7 +38,7 @@ public class ServerCMD implements CommandExecutor {
                         p.resetTitle();
                         if (ServerMonitor.getInstance().isPortAvailable(ServerMonitor.getInstance().getPlayerPort(p.getUniqueId()))) {
                             ServerMonitor.getInstance().startServer(p);
-                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, 72000, 10);
+                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP..."), 0, Integer.MAX_VALUE, 0);
                             p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP, please wait..."));
                         } else {
                             PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 60);
