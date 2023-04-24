@@ -177,10 +177,4 @@ public class HubListener implements Listener {
     public void onMove(PlayerMoveEvent e) {
         e.setTo(e.getFrom());
     }
-
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) {
-        e.setCancelled(true);
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&f" + e.getPlayer().getDisplayName() + ": " + e.getMessage()));
-    }
 }
