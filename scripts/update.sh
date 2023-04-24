@@ -11,7 +11,7 @@ rm -rf BungeeCord.jar
 
 for dir in /network/BungeeCord/servers/*/; do
     if [ -d "$dir" ]; then
-	cp paper-*.jar "$dir"/paper.jar
+	    cp paper-*.jar "$dir"/paper.jar
     	cp PlayerServer.jar "$dir"/plugins/PlayerServer.jar
     fi
 done

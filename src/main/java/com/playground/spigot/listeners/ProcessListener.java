@@ -60,12 +60,6 @@ public class ProcessListener implements Listener {
     }
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) {
-        e.setCancelled(true);
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&f" + e.getPlayer().getDisplayName() + ": " + e.getMessage()));
-    }
-
-    @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent e) {
 
         if ((e.getPlayer().getUniqueId().equals(PlayerServer.getServerName())
