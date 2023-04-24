@@ -96,12 +96,16 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.19.3-R0.1-SNAPSHOT</version>
+      <version>1.19.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
           <artifactId>gson</artifactId>
           <groupId>com.google.code.gson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>joml</artifactId>
+          <groupId>org.joml</groupId>
         </exclusion>
         <exclusion>
           <artifactId>guava</artifactId>
@@ -120,7 +124,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
-      <version>1.19.3-R0.1-SNAPSHOT</version>
+      <version>1.19.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -149,10 +153,6 @@
         </exclusion>
         <exclusion>
           <artifactId>datafixerupper</artifactId>
-          <groupId>com.mojang</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>javabridge</artifactId>
           <groupId>com.mojang</groupId>
         </exclusion>
         <exclusion>
@@ -228,10 +228,6 @@
           <groupId>org.apache.logging.log4j</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>joml</artifactId>
-          <groupId>org.joml</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>slf4j-api</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
@@ -244,8 +240,8 @@
           <groupId>org.xerial</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>mysql-connector-java</artifactId>
-          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-j</artifactId>
+          <groupId>com.mysql</groupId>
         </exclusion>
         <exclusion>
           <artifactId>maven-resolver-provider</artifactId>
