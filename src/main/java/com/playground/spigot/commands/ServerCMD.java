@@ -25,7 +25,7 @@ public class ServerCMD implements CommandExecutor {
             Player p = (Player) sender;
 
             if (args.length == 0) {
-                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
 
                 if (!ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
                     commandCooldown.add(p);

@@ -20,7 +20,7 @@ public class DeleteCMD implements CommandExecutor {
                 if (ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
                     if (!ServerCMD.commandCooldown.contains(p)) {
                         HubListener.deleteServer(p);
-                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                         p.resetTitle();
                         p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"), 0, 60, 10);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP has been deleted!"));

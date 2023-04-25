@@ -25,7 +25,7 @@ public class CreditsCMD implements CommandExecutor {
                     if (player != null && player.isOnline()) {
                         PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1);
                         ((CraftPlayer) player).getHandle().b.a(packet);
-                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aNow playing end credits for " + args[0] + "!"));
                     } else {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c" + args[0] + " was not found! Please try again."));

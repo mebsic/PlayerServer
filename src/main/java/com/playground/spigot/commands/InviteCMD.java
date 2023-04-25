@@ -26,7 +26,7 @@ public class InviteCMD implements CommandExecutor {
 
                     if (uuid != null && !PlayerServer.getInstance().getSqlInviteManager().exists(uuid, PlayerServer.getServerName())) {
                         PlayerServer.getInstance().getSqlInviteManager().addPlayer(uuid, PlayerServer.getServerName());
-                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a" + args[0] + " has been invited to the SMP!"));
                     } else if (uuid != null && PlayerServer.getInstance().getSqlInviteManager().exists(uuid, PlayerServer.getServerName())) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c" + args[0] + " is already invited to the SMP! Remove them using &b/remove " + args[0]));

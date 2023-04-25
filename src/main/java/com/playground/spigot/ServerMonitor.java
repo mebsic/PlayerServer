@@ -181,7 +181,7 @@ public class ServerMonitor {
             }
             attempts = connectionAttempts.computeIfPresent(p.getUniqueId(), (k, v) -> v + 1);
             p.resetTitle();
-            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
 
             if (!online && attempts == 1) {
                 p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."), 0, Integer.MAX_VALUE, 0);
