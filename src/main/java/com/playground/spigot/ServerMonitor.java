@@ -4,6 +4,7 @@ import com.playground.spigot.listeners.HubListener;
 import com.google.common.base.Charsets;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,10 +18,11 @@ import java.util.*;
 @SuppressWarnings("deprecation")
 public class ServerMonitor {
 
-    public Map<UUID, Integer> connectionAttempts = new HashMap<>(), taskID = new HashMap<>();
-    public static List<Player> newServerCooldown = new ArrayList<>();
-    public static ServerMonitor instance = new ServerMonitor();
+    public Map<UUID, Integer> connectionAttempts = new HashMap<>();
+    public Map<UUID, Integer> taskID = new HashMap<>();
     public Map<UUID, ServerStatus> status = new HashMap<>();
+    public static ArrayList<Player> newServerCooldown = new ArrayList<>();
+    public static ServerMonitor instance = new ServerMonitor();
 
     public enum ServerStatus {
         STARTING
@@ -179,6 +181,7 @@ public class ServerMonitor {
             }
             attempts = connectionAttempts.computeIfPresent(p.getUniqueId(), (k, v) -> v + 1);
             p.resetTitle();
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
 
             if (!online && attempts == 1) {
                 p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&eTrying to join your SMP..."), 0, Integer.MAX_VALUE, 0);

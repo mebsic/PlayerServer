@@ -4,6 +4,7 @@ import com.playground.spigot.PlayerServer;
 import net.minecraft.network.protocol.game.PacketPlayOutGameStateChange;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class CreditsCMD implements CommandExecutor {
                     if (player != null && player.isOnline()) {
                         PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1);
                         ((CraftPlayer) player).getHandle().b.a(packet);
+                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aNow playing end credits for " + args[0] + "!"));
                     } else {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c" + args[0] + " was not found! Please try again."));

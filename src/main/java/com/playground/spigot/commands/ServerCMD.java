@@ -3,16 +3,16 @@ package com.playground.spigot.commands;
 import com.playground.spigot.PlayerServer;
 import com.playground.spigot.ServerMonitor;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ServerCMD implements CommandExecutor {
 
-    public static List<Player> commandCooldown = new ArrayList<>();
+    public static ArrayList<Player> commandCooldown = new ArrayList<>();
     public PlayerServer plugin;
 
     public ServerCMD(PlayerServer plugin) {
@@ -25,6 +25,8 @@ public class ServerCMD implements CommandExecutor {
             Player p = (Player) sender;
 
             if (args.length == 0) {
+                p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+
                 if (!ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
                     commandCooldown.add(p);
                     ServerMonitor.getInstance().addBungeeServer(p);
