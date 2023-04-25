@@ -1,8 +1,8 @@
 package com.playground.spigot.listeners;
 
 import com.playground.spigot.PlayerServer;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
@@ -39,6 +39,7 @@ public class ProcessListener implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
                     e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', "\n&6Welcome to the SMP! Invite your friends using &b/invite\n&6To return to the hub, type &a/hub"));
                 }
             }.runTaskLaterAsynchronously(PlayerServer.getInstance(), 40L);
