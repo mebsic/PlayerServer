@@ -30,7 +30,12 @@ import java.util.logging.Level;
 @SuppressWarnings("deprecation")
 public class PlayerServer extends JavaPlugin {
 
-    public String serverType, playerServerDirectory, bungeeConfigLocation, scriptsDirectory, whitelistDirectory, opsDirectory;
+    public String serverType;
+    public String playerServerDirectory;
+    public String bungeeConfigLocation;
+    public String scriptsDirectory;
+    public String whitelistDirectory;
+    public String opsDirectory;
     public SQLInviteManager sqlInviteManager;
     public SQLServerManager sqlServerManager;
     public SQLPortManager sqlPortManager;
