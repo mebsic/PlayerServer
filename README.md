@@ -17,7 +17,7 @@ This plugin requires a BungeeCord network and MySQL database hosted on a VPS or 
     Start the server
   </li>
   <li>
-    Delete the server (work in progress)
+    Delete the server (Work in progress)
   </li>
   <li>
     Server shutdown after 1 hour if no players online
@@ -36,7 +36,7 @@ This plugin requires a BungeeCord network and MySQL database hosted on a VPS or 
     Change the message of the day (MOTD) that displays in the server list 
   </li>
   <li>
-    Automatic updates for private servers (coming soon)
+    Automatic updates for private servers (Coming soon)
   </li>
   <li>
     Maintenance mode
@@ -71,10 +71,10 @@ This plugin requires a BungeeCord network and MySQL database hosted on a VPS or 
 #### Console commands (BungeeCord only)
 <ul>
   <li>
-    /maintenance: Enable and disable maintenance mode
+    maintenance: Enable and disable maintenance mode
   </li>
   <li>
-    /whitelist: Add or remove a player in the maintenance whitelist
+    whitelist: Add or remove a player in the maintenance whitelist
   </li>
 </ul>
 
