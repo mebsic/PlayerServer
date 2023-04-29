@@ -44,7 +44,7 @@ public class ServerCMD implements CommandExecutor {
                             p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Starting your SMP, please wait..."));
                         } else {
                             PlayerServer.getInstance().sendPlayer(p, p.getUniqueId().toString(), 60);
-                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aTeleporting..."), 0, 60, 10);
+                            p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&aTeleporting..."), 0, Integer.MAX_VALUE, 0);
                             p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYour SMP is already online, teleporting you..."));
                         }
                     } else {
