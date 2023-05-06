@@ -129,6 +129,7 @@ public class BungeeManager extends Plugin implements Listener {
             SQL.connect();
         } catch (ClassNotFoundException | SQLException e) {
             getLogger().log(Level.SEVERE, "Cannot connect to database!");
+            getProxy().stop();
         }
 
         if (SQL.isConnected()) {
