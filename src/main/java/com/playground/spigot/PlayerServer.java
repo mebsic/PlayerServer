@@ -44,6 +44,10 @@ public class PlayerServer extends JavaPlugin {
     public static UUID serverName;
     public MySQL SQL;
 
+    public static PlayerServer getInstance() {
+        return instance;
+    }
+
     @Override
     public void onEnable() {
         instance = this;
@@ -83,35 +87,6 @@ public class PlayerServer extends JavaPlugin {
             getSqlServerManager().setOnline(getServerName(), false);
         }
         disconnectAndSave();
-    }
-
-    public static PlayerServer getInstance() {
-        return instance;
-    }
-
-    public static UUID getServerName() {
-        return serverName;
-    }
-
-    public FileConfiguration getCustomConfig() {
-        return mysqlYml;
-    }
-
-    public SQLServerManager getSqlServerManager() {
-        return sqlServerManager;
-    }
-
-    public SQLPortManager getSqlPortManager() {
-        return sqlPortManager;
-    }
-
-    public SQLInviteManager getSqlInviteManager() {
-        return sqlInviteManager;
-    }
-
-    private void disconnectAndSave() {
-        SQL.disconnect();
-        saveConfig();
     }
 
     private void connectToDatabase() {
@@ -206,5 +181,30 @@ public class PlayerServer extends JavaPlugin {
         in.close();
 
         return UUID.fromString(uuid);
+    }
+
+    public static UUID getServerName() {
+        return serverName;
+    }
+
+    public FileConfiguration getCustomConfig() {
+        return mysqlYml;
+    }
+
+    public SQLServerManager getSqlServerManager() {
+        return sqlServerManager;
+    }
+
+    public SQLPortManager getSqlPortManager() {
+        return sqlPortManager;
+    }
+
+    public SQLInviteManager getSqlInviteManager() {
+        return sqlInviteManager;
+    }
+
+    private void disconnectAndSave() {
+        SQL.disconnect();
+        saveConfig();
     }
 }

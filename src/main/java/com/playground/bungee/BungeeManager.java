@@ -30,19 +30,24 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.file.Files;
 import java.sql.SQLException;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 @SuppressWarnings("deprecation")
 public class BungeeManager extends Plugin implements Listener {
 
-    private final String sendFallbackServerFailedMessage = "\n\n&cCould not send you to a fallback server!\nTo play again, please reconnect to &bexample.com";
+    private final String sendFallbackServerFailedMessage = "\n\n&cCould not send you to a fallback server!\nTo play again, please reconnect to &b";
     public SQLMaintenanceManager sqlMaintenanceManager;
     public SQLWhitelistManager sqlWhitelistManager;
-    public Configuration sqlConfig;
-    public Configuration motdConfig;
+    private Configuration sqlConfig;
+    private Configuration motdConfig;
+    private Configuration serverIPConfig;
     public static Plugin instance;
     public MySQL SQL;
+
+    public static BungeeManager getInstance() {
+        return (BungeeManager) instance;
+    }
 
     @Override
     public void onEnable() {
@@ -66,6 +71,7 @@ public class BungeeManager extends Plugin implements Listener {
     private void loadConfigs() {
         sqlConfig = loadUniqueConfig("mysql.yml");
         motdConfig = loadUniqueConfig("motd.yml");
+        serverIPConfig = loadUniqueConfig("info.yml");
         getDatabaseConfigProperties();
     }
 
@@ -95,30 +101,6 @@ public class BungeeManager extends Plugin implements Listener {
         MySQL.username = getCustomSqlConfig().getString("username");
         MySQL.password = getCustomSqlConfig().getString("password");
         MySQL.useSSL = getCustomSqlConfig().getBoolean("useSSL");
-    }
-
-    public Configuration getCustomMotdConfig() {
-        return motdConfig;
-    }
-
-    public Configuration getCustomSqlConfig() {
-        return sqlConfig;
-    }
-
-    public static BungeeManager getInstance() {
-        return (BungeeManager) instance;
-    }
-
-    public SQLMaintenanceManager getSqlMaintenanceManager() {
-        return sqlMaintenanceManager;
-    }
-
-    public SQLWhitelistManager getSqlWhitelistManager() {
-        return sqlWhitelistManager;
-    }
-
-    private void disconnectFromDatabase() {
-        SQL.disconnect();
     }
 
     private void connectToDatabase() {
@@ -190,7 +172,7 @@ public class BungeeManager extends Plugin implements Listener {
     private void sendToFallbackServer(ProxiedPlayer player, String message) {
         getProxy().getServers().get(player.getPendingConnection().getListener().getFallbackServer()).ping((result, error) -> {
             if (error != null) {
-                player.disconnect(ChatColor.translateAlternateColorCodes('&', message + sendFallbackServerFailedMessage));
+                player.disconnect(ChatColor.translateAlternateColorCodes('&', message + sendFallbackServerFailedMessage + getCustomServerIPConfig().getString("server-ip")));
             } else {
                 player.connect(ProxyServer.getInstance().getServers().get(player.getPendingConnection().getListener().getFallbackServer()));
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
@@ -239,5 +221,29 @@ public class BungeeManager extends Plugin implements Listener {
         in.close();
 
         return UUID.fromString(realUUID);
+    }
+
+    public Configuration getCustomMotdConfig() {
+        return motdConfig;
+    }
+
+    public Configuration getCustomServerIPConfig() {
+        return serverIPConfig;
+    }
+
+    public Configuration getCustomSqlConfig() {
+        return sqlConfig;
+    }
+
+    public SQLMaintenanceManager getSqlMaintenanceManager() {
+        return sqlMaintenanceManager;
+    }
+
+    public SQLWhitelistManager getSqlWhitelistManager() {
+        return sqlWhitelistManager;
+    }
+
+    private void disconnectFromDatabase() {
+        SQL.disconnect();
     }
 }
