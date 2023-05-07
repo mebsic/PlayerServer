@@ -86,7 +86,7 @@ public class ProcessListener implements Listener {
                 || e.getMessage().startsWith("/restart")
                 || e.getMessage().startsWith("/reload")
                 || e.getMessage().startsWith("/rl")
-                || e.getMessage().startsWith("/spigot")
+                || e.getMessage().startsWith("/bukkit")
                 || e.getMessage().startsWith("/paper")
                 || e.getMessage().startsWith("/spigot")
                 || e.getMessage().startsWith("/smp")
