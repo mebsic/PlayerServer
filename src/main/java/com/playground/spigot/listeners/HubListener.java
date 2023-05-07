@@ -26,10 +26,7 @@ public class HubListener implements Listener {
         e.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
         setEffects(e.getPlayer());
         e.setJoinMessage(null);
-
-        if (ServerMonitor.getInstance().isCreatingServer(e.getPlayer().getUniqueId())) {
-            deleteServer(e.getPlayer());
-        }
+        checkIfCreatingServer(e.getPlayer());
     }
 
     @EventHandler
@@ -40,6 +37,7 @@ public class HubListener implements Listener {
         e.setQuitMessage(null);
         e.getPlayer().resetTitle();
         endProcessInterruptedStart(e.getPlayer());
+        checkIfCreatingServer(e.getPlayer());
     }
 
     @EventHandler
@@ -80,7 +78,7 @@ public class HubListener implements Listener {
         deleteServerFromConfig(p);
     }
 
-    public static void deleteServerFromConfig(Player p) {
+    private static void deleteServerFromConfig(Player p) {
         String uuidString = p.getUniqueId().toString();
         File bungeeFile = new File(PlayerServer.getInstance().bungeeConfigLocation);
         FileConfiguration bungeeConfig = new YamlConfiguration();
@@ -124,6 +122,12 @@ public class HubListener implements Listener {
             Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/stopserver.sh " + p.getUniqueId());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkIfCreatingServer(Player p) {
+        if (ServerMonitor.getInstance().isCreatingServer(p.getUniqueId())) {
+            deleteServer(p);
         }
     }
 
