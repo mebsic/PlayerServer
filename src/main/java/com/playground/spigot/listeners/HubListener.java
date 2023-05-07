@@ -178,7 +178,7 @@ public class HubListener implements Listener {
                 || e.getMessage().startsWith("/reload")
                 || e.getMessage().startsWith("/whitelist")
                 || e.getMessage().startsWith("/rl")
-                || e.getMessage().startsWith("/spigot")
+                || e.getMessage().startsWith("/bukkit")
                 || e.getMessage().startsWith("/paper")
                 || e.getMessage().startsWith("/spigot")
                 || e.getMessage().startsWith("/minecraft:")
