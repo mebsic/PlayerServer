@@ -80,7 +80,7 @@ public class PlayerServer extends JavaPlugin {
                 HubListener.endProcessInterruptedStart(p);
             }
         } else if (serverType.equalsIgnoreCase("smp")) {
-            getSqlPlayerManager().setOnline(getServerName(), false);
+            getSqlServerManager().setOnline(getServerName(), false);
         }
         disconnectAndSave();
     }
@@ -97,7 +97,7 @@ public class PlayerServer extends JavaPlugin {
         return mysqlYml;
     }
 
-    public SQLServerManager getSqlPlayerManager() {
+    public SQLServerManager getSqlServerManager() {
         return sqlServerManager;
     }
 
@@ -130,10 +130,11 @@ public class PlayerServer extends JavaPlugin {
             Bukkit.getLogger().log(Level.INFO, "Connected to database!");
             if (serverType.equalsIgnoreCase("lobby")) {
                 getSqlPortManager().createCurrentPortTable();
-                getSqlPlayerManager().createServersTable();
+                getSqlServerManager().createServersTable();
                 getSqlInviteManager().createInvitesTable();
             } else if (serverType.equalsIgnoreCase("smp")) {
-                getSqlPlayerManager().setOnline(getServerName(), true);
+                getServer().setWhitelist(false);
+                getSqlServerManager().setOnline(getServerName(), true);
             }
         }
     }

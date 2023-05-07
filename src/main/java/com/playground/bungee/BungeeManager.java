@@ -39,7 +39,8 @@ public class BungeeManager extends Plugin implements Listener {
     private final String sendFallbackServerFailedMessage = "\n\n&cCould not send you to a fallback server!\nTo play again, please reconnect to &bexample.com";
     public SQLMaintenanceManager sqlMaintenanceManager;
     public SQLWhitelistManager sqlWhitelistManager;
-    public Configuration sqlConfig, motdConfig;
+    public Configuration sqlConfig;
+    public Configuration motdConfig;
     public static Plugin instance;
     public MySQL SQL;
 
@@ -147,7 +148,12 @@ public class BungeeManager extends Plugin implements Listener {
         if (e.getReceiver() instanceof ProxiedPlayer) {
             ProxiedPlayer p = (ProxiedPlayer) e.getReceiver();
             String port = new String(e.getData(), Charsets.UTF_8);
-            ServerInfo info = ProxyServer.getInstance().constructServerInfo(p.getUniqueId().toString(), new InetSocketAddress("localhost", Integer.parseInt(port)), p.getName() + "'s server", false);
+            ServerInfo info = ProxyServer.getInstance().getServers().get(p.getUniqueId().toString());
+
+            if (info != null) {
+                ProxyServer.getInstance().getServers().remove(info.getName());
+            }
+            info = ProxyServer.getInstance().constructServerInfo(p.getUniqueId().toString(), new InetSocketAddress("localhost", Integer.parseInt(port)), p.getName() + "'s server", false);
             ProxyServer.getInstance().getServers().putIfAbsent(p.getUniqueId().toString(), info);
         }
     }
@@ -161,10 +167,11 @@ public class BungeeManager extends Plugin implements Listener {
             ProxiedPlayer p = (ProxiedPlayer) e.getReceiver();
             ServerInfo info = ProxyServer.getInstance().getServers().get(p.getUniqueId().toString());
             String message = new String(e.getData(), Charsets.UTF_8);
+
             for (ProxiedPlayer player : info.getPlayers()) {
                 sendToFallbackServer(player, message);
             }
-            ProxyServer.getInstance().getServers().remove(p.getUniqueId().toString());
+            ProxyServer.getInstance().getServers().remove(info.getName());
         }
     }
 

@@ -17,7 +17,7 @@ This plugin requires a BungeeCord network and MySQL database hosted on a VPS or 
     Start the server
   </li>
   <li>
-    Delete the server (Work in progress)
+    Delete the server
   </li>
   <li>
     Server shutdown after 1 hour if no players online

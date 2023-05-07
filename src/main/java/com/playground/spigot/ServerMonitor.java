@@ -33,22 +33,26 @@ public class ServerMonitor {
     }
 
     public boolean isServerOnline(UUID uuid, int port) {
-        return PlayerServer.getInstance().getSqlPlayerManager().isOnline(uuid, port);
+        return PlayerServer.getInstance().getSqlServerManager().isOnline(uuid, port);
+    }
+
+    public boolean isCreatingServer(UUID uuid) {
+        return PlayerServer.getInstance().getSqlServerManager().isCreating(uuid);
     }
 
     public int getPlayerPort(UUID uuid) {
-        return PlayerServer.getInstance().getSqlPlayerManager().getPort(uuid);
+        return PlayerServer.getInstance().getSqlServerManager().getPort(uuid);
     }
 
     public boolean hasServer(UUID uuid) {
-        return PlayerServer.getInstance().getSqlPlayerManager().exists(uuid);
+        return PlayerServer.getInstance().getSqlServerManager().exists(uuid);
     }
 
     public void addBungeeServer(Player p) {
-        newServerCooldown.add(p);
         UUID playerID = p.getUniqueId();
         File bungeeFile = new File(PlayerServer.getInstance().bungeeConfigLocation);
         FileConfiguration bungeeConfig = new YamlConfiguration();
+        newServerCooldown.add(p);
 
         try {
             int port = PlayerServer.getInstance().getSqlPortManager().updateCurrentPort();
@@ -57,8 +61,11 @@ public class ServerMonitor {
             bungeeConfig.set("servers." + playerID + ".motd", p.getName() + "'s server");
             bungeeConfig.set("servers." + playerID + ".restricted", false);
             bungeeConfig.save(bungeeFile);
-            copyNewServer(p);
+
             p.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:add_server", String.valueOf(port).getBytes(Charsets.UTF_8));
+            PlayerServer.getInstance().getSqlServerManager().createServer(p.getUniqueId(), port, false, true);
+
+            copyNewServer(p);
             setupServer(p, port);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
@@ -96,15 +103,6 @@ public class ServerMonitor {
                     op.write("[" + jsonOps.toJSONString() + "]");
                     op.close();
 
-                    FileWriter whitelist = new FileWriter(PlayerServer.getInstance().whitelistDirectory.replace("%PLAYER", p.getUniqueId().toString()));
-                    final JSONObject jsonWhitelist = new JSONObject();
-                    jsonWhitelist.put("uuid", p.getUniqueId().toString());
-                    jsonWhitelist.put("name", p.getName());
-                    whitelist.write("[" + jsonWhitelist.toJSONString() + "]");
-                    whitelist.close();
-
-                    PlayerServer.getInstance().getSqlPlayerManager().createServer(p.getUniqueId(), port, false);
-
                     if (ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
                         new BukkitRunnable() {
                             @Override
@@ -120,9 +118,7 @@ public class ServerMonitor {
                             }
                         }.runTaskLaterAsynchronously(PlayerServer.getInstance(), 20);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException ignored) {}
             }
         }.runTaskLaterAsynchronously(PlayerServer.getInstance(), 120);
     }
@@ -158,7 +154,7 @@ public class ServerMonitor {
                     // PlayerServer might not set online status to false if server crashes or VPS restarts
                     // if server should not be online, set online to false in the database and start the server
                     if (isServerOnline(p.getUniqueId(), getPlayerPort(p.getUniqueId()))) {
-                        PlayerServer.getInstance().getSqlPlayerManager().setOnline(p.getUniqueId(), false);
+                        PlayerServer.getInstance().getSqlServerManager().setOnline(p.getUniqueId(), false);
                     }
                     Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/startserver.sh " + playerID);
                     joinServerAfterStart(p, getPlayerPort(p.getUniqueId()), 1800, 1800);

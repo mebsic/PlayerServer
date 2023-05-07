@@ -107,4 +107,24 @@ public class SQLInviteManager {
             }
         }
     }
+
+    public void deleteInvites(UUID uuid) {
+        PreparedStatement ps = null;
+
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("DELETE FROM invites WHERE server=?");
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }
