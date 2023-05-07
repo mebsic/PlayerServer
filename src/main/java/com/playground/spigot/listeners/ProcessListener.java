@@ -34,6 +34,11 @@ public class ProcessListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         e.getPlayer().resetTitle();
         e.setJoinMessage(ChatColor.translateAlternateColorCodes('&', "&7" + e.getPlayer().getDisplayName() + " &ejoined the SMP"));
+
+        if (PlayerServer.getInstance().getSqlServerManager().isCreating(e.getPlayer().getUniqueId())) {
+            PlayerServer.getInstance().getSqlServerManager().setCreating(e.getPlayer().getUniqueId(), false);
+        }
+
         if (e.getPlayer().getUniqueId().equals(PlayerServer.getServerName())) {
             e.getPlayer().setOp(true);
             new BukkitRunnable() {

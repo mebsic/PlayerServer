@@ -5,6 +5,9 @@ import com.playground.spigot.commands.ServerCMD;
 import com.playground.spigot.ServerMonitor;
 import com.google.common.base.Charsets;
 import org.bukkit.*;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
+import java.io.File;
 import java.io.IOException;
 
 public class HubListener implements Listener {
@@ -22,6 +26,10 @@ public class HubListener implements Listener {
         e.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
         setEffects(e.getPlayer());
         e.setJoinMessage(null);
+
+        if (ServerMonitor.getInstance().isCreatingServer(e.getPlayer().getUniqueId())) {
+            deleteServer(e.getPlayer());
+        }
     }
 
     @EventHandler
@@ -43,38 +51,56 @@ public class HubListener implements Listener {
 
     public static void endProcessInterruptedStart(Player p) {
         if (ServerMonitor.getInstance().status.containsKey(p.getUniqueId())) {
-            try {
-                Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/stopserver.sh " + p.getUniqueId());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            stopServer(p);
         }
         reset(p);
     }
 
     private static void reset(Player p) {
-        if (ServerCMD.commandCooldown.contains(p)
-                && (ServerMonitor.getInstance().taskID.containsKey(p.getUniqueId())
-                && ServerMonitor.getInstance().connectionAttempts.containsKey(p.getUniqueId()))) {
+        boolean isInProgress = ServerMonitor.getInstance().taskID.containsKey(p.getUniqueId()) || ServerMonitor.getInstance().connectionAttempts.containsKey(p.getUniqueId());
+
+        if (ServerCMD.commandCooldown.contains(p) && isInProgress) {
             ServerCMD.commandCooldown.remove(p);
-        } else if (ServerMonitor.newServerCooldown.contains(p)
-                && (ServerMonitor.getInstance().taskID.containsKey(p.getUniqueId())
-                && ServerMonitor.getInstance().connectionAttempts.containsKey(p.getUniqueId()))) {
+        }
+
+        if (ServerMonitor.newServerCooldown.contains(p) && isInProgress) {
             ServerMonitor.newServerCooldown.remove(p);
-            deleteServer(p);
         }
         removeFromCollection(p);
     }
 
     public static void deleteServer(Player p) {
-        String serverDeletedMessage = "&cThe SMP you were playing on was deleted by " + p.getName() + "!";
+        String serverDeletedMessage = "&cThe SMP you were playing on was deleted by &b" + p.getName() + "&c!";
+        p.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:remove_server", serverDeletedMessage.getBytes(Charsets.UTF_8));
+
+        PlayerServer.getInstance().getSqlInviteManager().deleteInvites(p.getUniqueId());
+        PlayerServer.getInstance().getSqlServerManager().remove(p.getUniqueId());
+        stopServer(p);
+        deleteServerDirectoryIfExists(p);
+        deleteServerFromConfig(p);
+    }
+
+    public static void deleteServerFromConfig(Player p) {
+        String uuidString = p.getUniqueId().toString();
+        File bungeeFile = new File(PlayerServer.getInstance().bungeeConfigLocation);
+        FileConfiguration bungeeConfig = new YamlConfiguration();
 
         try {
-            p.sendPluginMessage(PlayerServer.getInstance(), "bungeecord:remove_server", serverDeletedMessage.getBytes(Charsets.UTF_8));
-            PlayerServer.getInstance().getSqlPlayerManager().remove(p.getUniqueId());
-            Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/deleteserver.sh " + p.getUniqueId());
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            bungeeConfig.load(bungeeFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (bungeeConfig.getConfigurationSection("servers").getKeys(false).contains(uuidString)) {
+            bungeeConfig.getConfigurationSection("servers").set(uuidString, null);
+
+            try {
+                bungeeConfig.save(bungeeFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
             p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed to delete your SMP! Please try again later."));
         }
     }
@@ -87,6 +113,20 @@ public class HubListener implements Listener {
             PlayerServer.getInstance().getServer().getScheduler().cancelTask(tid);
             ServerMonitor.getInstance().taskID.remove(p.getUniqueId());
             ServerMonitor.getInstance().connectionAttempts.remove(p.getUniqueId());
+        }
+    }
+
+    public static void deleteServerDirectoryIfExists(Player p) {
+        try {
+            Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/deleteserver.sh " + p.getUniqueId());
+        } catch (IOException ignored) {}
+    }
+
+    private static void stopServer(Player p) {
+        try {
+            Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/stopserver.sh " + p.getUniqueId());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -18,7 +18,7 @@ public class SQLServerManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS servers(uuid VARCHAR(100), port INT UNSIGNED, online BOOLEAN, PRIMARY KEY (uuid))");
+            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS servers(uuid VARCHAR(100), port INT UNSIGNED, online BOOLEAN, creating BOOLEAN, PRIMARY KEY (uuid))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,15 +33,16 @@ public class SQLServerManager {
         }
     }
 
-    public void createServer(UUID uuid, int port, boolean online) {
+    public void createServer(UUID uuid, int port, boolean online, boolean creating) {
         PreparedStatement ps = null;
 
         if (!exists(uuid)) {
             try {
-                ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO servers(uuid, port, online) VALUES (?, ?, ?)");
+                ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO servers(uuid, port, online, creating) VALUES (?, ?, ?, ?)");
                 ps.setString(1, uuid.toString());
                 ps.setInt(2, port);
                 ps.setBoolean(3, online);
+                ps.setBoolean(4, creating);
                 ps.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -174,6 +175,57 @@ public class SQLServerManager {
         try {
             ps = plugin.SQL.getConnection().prepareStatement("UPDATE servers SET online=? WHERE uuid=?");
             ps.setBoolean(1, online);
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isCreating(UUID uuid) {
+        boolean isCreatingServer = false;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
+            ps.setString(1, uuid.toString());
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                isCreatingServer = rs.getBoolean(4);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return isCreatingServer;
+    }
+
+    public void setCreating(UUID uuid, boolean creating) {
+        PreparedStatement ps = null;
+
+        try {
+            ps = plugin.SQL.getConnection().prepareStatement("UPDATE servers SET creating=? WHERE uuid=?");
+            ps.setBoolean(1, creating);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {

@@ -28,7 +28,7 @@ public class DeleteCMD implements CommandExecutor {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou cannot delete your SMP while the server is loading!"));
                     }
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have an SMP! Create a server using &b/smp"));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have an SMP! To create a server, type &b/smp"));
                 }
             } else {
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cInvalid command! Correct usage: &b/delete"));

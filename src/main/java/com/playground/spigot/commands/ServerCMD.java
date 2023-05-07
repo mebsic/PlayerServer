@@ -2,6 +2,7 @@ package com.playground.spigot.commands;
 
 import com.playground.spigot.PlayerServer;
 import com.playground.spigot.ServerMonitor;
+import com.playground.spigot.listeners.HubListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -29,6 +30,7 @@ public class ServerCMD implements CommandExecutor {
 
                 if (!ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
                     commandCooldown.add(p);
+                    HubListener.deleteServerDirectoryIfExists(p);
                     ServerMonitor.getInstance().addBungeeServer(p);
                     p.resetTitle();
                     p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, Integer.MAX_VALUE, 0);
