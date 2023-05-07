@@ -89,7 +89,6 @@ public class HubListener implements Listener {
             bungeeConfig.load(bungeeFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
-            return;
         }
 
         if (bungeeConfig.getConfigurationSection("servers").getKeys(false).contains(uuidString)) {
@@ -100,8 +99,6 @@ public class HubListener implements Listener {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cFailed to delete your SMP! Please try again later."));
         }
     }
 
