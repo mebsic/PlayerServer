@@ -36,9 +36,6 @@ This plugin requires a BungeeCord network and MySQL database hosted on a VPS or 
     Change the message of the day (MOTD) that displays in the server list 
   </li>
   <li>
-    Automatic updates for private servers (Coming soon)
-  </li>
-  <li>
     Maintenance mode
   </li>
   <li>
