@@ -74,7 +74,7 @@ public class HubListener implements Listener {
         PlayerServer.getInstance().getSqlInviteManager().deleteInvites(p.getUniqueId());
         PlayerServer.getInstance().getSqlServerManager().remove(p.getUniqueId());
         stopServer(p);
-        deleteServerDirectoryIfExists(p);
+        deleteServerDirectory(p);
         deleteServerFromConfig(p);
     }
 
@@ -111,7 +111,7 @@ public class HubListener implements Listener {
         }
     }
 
-    public static void deleteServerDirectoryIfExists(Player p) {
+    public static void deleteServerDirectory(Player p) {
         try {
             Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/deleteserver.sh " + p.getUniqueId());
         } catch (IOException ignored) {}
