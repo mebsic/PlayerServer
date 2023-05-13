@@ -30,6 +30,8 @@ public class ServerCMD implements CommandExecutor {
 
                 if (!ServerMonitor.getInstance().hasServer(p.getUniqueId())) {
                     commandCooldown.add(p);
+                    HubListener.stopServer(p);
+                    HubListener.deleteServerDirectory(p);
                     ServerMonitor.getInstance().addBungeeServer(p);
                     p.resetTitle();
                     p.sendTitle("", ChatColor.translateAlternateColorCodes('&', "&7Creating your SMP..."), 0, Integer.MAX_VALUE, 0);

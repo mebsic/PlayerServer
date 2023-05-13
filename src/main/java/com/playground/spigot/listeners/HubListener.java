@@ -117,7 +117,7 @@ public class HubListener implements Listener {
         } catch (IOException ignored) {}
     }
 
-    private static void stopServer(Player p) {
+    public static void stopServer(Player p) {
         try {
             Runtime.getRuntime().exec(PlayerServer.getInstance().scriptsDirectory + "/stopserver.sh " + p.getUniqueId());
         } catch (IOException e) {
