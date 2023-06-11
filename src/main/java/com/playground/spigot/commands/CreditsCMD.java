@@ -8,7 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class CreditsCMD implements CommandExecutor {
@@ -24,7 +24,7 @@ public class CreditsCMD implements CommandExecutor {
 
                     if (player != null && player.isOnline()) {
                         PacketPlayOutGameStateChange packet = new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.e, 1);
-                        ((CraftPlayer) player).getHandle().b.a(packet);
+                        ((CraftPlayer) player).getHandle().c.a(packet);
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aNow playing end credits for " + args[0] + "!"));
                     } else {

@@ -8,17 +8,11 @@ import java.util.UUID;
 
 public class SQLWhitelistManager {
 
-    private final BungeeManager plugin;
-
-    public SQLWhitelistManager(BungeeManager plugin) {
-        this.plugin = plugin;
-    }
-
     public void createWhitelistTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS whitelist(id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100), PRIMARY KEY(id))");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS whitelist(id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100), PRIMARY KEY(id))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,7 +32,7 @@ public class SQLWhitelistManager {
 
         if (!exists(uuid)) {
             try {
-                ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO whitelist(uuid) VALUES (?)");
+                ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("INSERT INTO whitelist(uuid) VALUES (?)");
                 ps.setString(1, uuid.toString());
                 ps.executeUpdate();
             } catch (SQLException e) {
@@ -61,7 +55,7 @@ public class SQLWhitelistManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM whitelist WHERE uuid=?");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM whitelist WHERE uuid=?");
             ps.setString(1, uuid.toString());
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -89,7 +83,7 @@ public class SQLWhitelistManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("DELETE FROM whitelist WHERE uuid=?");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("DELETE FROM whitelist WHERE uuid=?");
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {

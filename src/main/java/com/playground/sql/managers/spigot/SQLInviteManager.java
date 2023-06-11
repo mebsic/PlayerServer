@@ -8,17 +8,11 @@ import java.util.UUID;
 
 public class SQLInviteManager {
 
-    private final PlayerServer plugin;
-
-    public SQLInviteManager(PlayerServer plugin) {
-        this.plugin = plugin;
-    }
-
     public void createInvitesTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS invites(id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100), server VARCHAR(100), PRIMARY KEY(id))");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS invites(id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(100), server VARCHAR(100), PRIMARY KEY(id))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,7 +32,7 @@ public class SQLInviteManager {
 
         if (!exists(uuid, server)) {
             try {
-                ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO invites(uuid, server) VALUES (?, ?)");
+                ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("INSERT INTO invites(uuid, server) VALUES (?, ?)");
                 ps.setString(1, uuid.toString());
                 ps.setString(2, server.toString());
                 ps.executeUpdate();
@@ -62,7 +56,7 @@ public class SQLInviteManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM invites WHERE uuid=? AND server=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM invites WHERE uuid=? AND server=?");
             ps.setString(1, uuid.toString());
             ps.setString(2, server.toString());
             rs = ps.executeQuery();
@@ -91,7 +85,7 @@ public class SQLInviteManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("DELETE FROM invites WHERE uuid=? AND server=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("DELETE FROM invites WHERE uuid=? AND server=?");
             ps.setString(1, uuid.toString());
             ps.setString(2, server.toString());
             ps.executeUpdate();
@@ -112,7 +106,7 @@ public class SQLInviteManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("DELETE FROM invites WHERE server=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("DELETE FROM invites WHERE server=?");
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
