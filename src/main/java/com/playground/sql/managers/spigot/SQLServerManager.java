@@ -8,17 +8,11 @@ import java.util.UUID;
 
 public class SQLServerManager {
 
-    private final PlayerServer plugin;
-
-    public SQLServerManager(PlayerServer plugin) {
-        this.plugin = plugin;
-    }
-
     public void createServersTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS servers(uuid VARCHAR(100), port INT UNSIGNED, online BOOLEAN, creating BOOLEAN, PRIMARY KEY (uuid))");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS servers(uuid VARCHAR(100), port INT UNSIGNED, online BOOLEAN, creating BOOLEAN, PRIMARY KEY (uuid))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,7 +32,7 @@ public class SQLServerManager {
 
         if (!exists(uuid)) {
             try {
-                ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO servers(uuid, port, online, creating) VALUES (?, ?, ?, ?)");
+                ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("INSERT INTO servers(uuid, port, online, creating) VALUES (?, ?, ?, ?)");
                 ps.setString(1, uuid.toString());
                 ps.setInt(2, port);
                 ps.setBoolean(3, online);
@@ -64,7 +58,7 @@ public class SQLServerManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
             ps.setString(1, uuid.toString());
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -94,7 +88,7 @@ public class SQLServerManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
             ps.setString(1, uuid.toString());
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -122,7 +116,7 @@ public class SQLServerManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("DELETE FROM servers WHERE uuid=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("DELETE FROM servers WHERE uuid=?");
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -144,7 +138,7 @@ public class SQLServerManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=? AND port=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=? AND port=?");
             ps.setString(1, uuid.toString());
             ps.setInt(2, port);
             rs = ps.executeQuery();
@@ -173,7 +167,7 @@ public class SQLServerManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("UPDATE servers SET online=? WHERE uuid=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("UPDATE servers SET online=? WHERE uuid=?");
             ps.setBoolean(1, online);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();
@@ -196,7 +190,7 @@ public class SQLServerManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM servers WHERE uuid=?");
             ps.setString(1, uuid.toString());
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -224,7 +218,7 @@ public class SQLServerManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("UPDATE servers SET creating=? WHERE uuid=?");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("UPDATE servers SET creating=? WHERE uuid=?");
             ps.setBoolean(1, creating);
             ps.setString(2, uuid.toString());
             ps.executeUpdate();

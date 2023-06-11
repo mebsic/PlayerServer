@@ -105,8 +105,8 @@ public class BungeeManager extends Plugin implements Listener {
 
     private void connectToDatabase() {
         this.SQL = new MySQL();
-        this.sqlMaintenanceManager = new SQLMaintenanceManager(this);
-        this.sqlWhitelistManager = new SQLWhitelistManager(this);
+        this.sqlMaintenanceManager = new SQLMaintenanceManager();
+        this.sqlWhitelistManager = new SQLWhitelistManager();
 
         try {
             SQL.connect();
@@ -233,6 +233,10 @@ public class BungeeManager extends Plugin implements Listener {
 
     public Configuration getCustomSqlConfig() {
         return sqlConfig;
+    }
+
+    public MySQL getSQL() {
+        return SQL;
     }
 
     public SQLMaintenanceManager getSqlMaintenanceManager() {

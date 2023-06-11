@@ -39,8 +39,8 @@ public class PlayerServer extends JavaPlugin {
     public SQLInviteManager sqlInviteManager;
     public SQLServerManager sqlServerManager;
     public SQLPortManager sqlPortManager;
-    public static PlayerServer instance;
     public FileConfiguration mysqlYml;
+    public static PlayerServer instance;
     public static UUID serverName;
     public MySQL SQL;
 
@@ -91,9 +91,9 @@ public class PlayerServer extends JavaPlugin {
 
     private void connectToDatabase() {
         this.SQL = new MySQL();
-        this.sqlPortManager = new SQLPortManager(this);
-        this.sqlServerManager = new SQLServerManager(this);
-        this.sqlInviteManager = new SQLInviteManager(this);
+        this.sqlPortManager = new SQLPortManager();
+        this.sqlServerManager = new SQLServerManager();
+        this.sqlInviteManager = new SQLInviteManager();
 
         try {
             SQL.connect();
@@ -189,6 +189,10 @@ public class PlayerServer extends JavaPlugin {
 
     public FileConfiguration getCustomConfig() {
         return mysqlYml;
+    }
+
+    public MySQL getSQL() {
+        return SQL;
     }
 
     public SQLServerManager getSqlServerManager() {

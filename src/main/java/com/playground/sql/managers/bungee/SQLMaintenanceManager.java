@@ -7,17 +7,11 @@ import java.sql.SQLException;
 
 public class SQLMaintenanceManager {
 
-    private final BungeeManager plugin;
-
-    public SQLMaintenanceManager(BungeeManager plugin) {
-        this.plugin = plugin;
-    }
-
     public void createMaintenanceTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS maintenance(enabled BOOLEAN, PRIMARY KEY (enabled))");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS maintenance(enabled BOOLEAN, PRIMARY KEY (enabled))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -40,7 +34,7 @@ public class SQLMaintenanceManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO maintenance(enabled) VALUES(?)");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("INSERT INTO maintenance(enabled) VALUES(?)");
             ps.setBoolean(1, false);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -60,7 +54,7 @@ public class SQLMaintenanceManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("UPDATE maintenance SET enabled=" + enabled);
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("UPDATE maintenance SET enabled=" + enabled);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -81,7 +75,7 @@ public class SQLMaintenanceManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM maintenance");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM maintenance");
             rs = ps.executeQuery();
             if (rs.next()) {
                 isDefaultMaintenanceStateAdded = true;
@@ -110,7 +104,7 @@ public class SQLMaintenanceManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM maintenance");
+            ps = BungeeManager.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM maintenance");
             rs = ps.executeQuery();
             if (rs.next()) {
                 isEnabled = rs.getBoolean(1);

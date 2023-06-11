@@ -8,17 +8,12 @@ import java.sql.SQLException;
 public class SQLPortManager {
 
     private final int DEFAULT_PORT = 25566;
-    private final PlayerServer plugin;
-
-    public SQLPortManager(PlayerServer plugin) {
-        this.plugin = plugin;
-    }
 
     public void createCurrentPortTable() {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS current_port(port INT UNSIGNED, PRIMARY KEY (port))");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("CREATE TABLE IF NOT EXISTS current_port(port INT UNSIGNED, PRIMARY KEY (port))");
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,7 +32,7 @@ public class SQLPortManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("INSERT INTO current_port(port) VALUES(?)");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("INSERT INTO current_port(port) VALUES(?)");
             ps.setInt(1, DEFAULT_PORT);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -60,7 +55,7 @@ public class SQLPortManager {
 
         if (exists()) {
             try {
-                ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM current_port");
+                ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM current_port");
                 rs = ps.executeQuery();
                 if (rs.next()) {
                     port = rs.getInt(1);
@@ -92,7 +87,7 @@ public class SQLPortManager {
         ResultSet rs = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("SELECT * FROM current_port");
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("SELECT * FROM current_port");
             rs = ps.executeQuery();
             if (rs.next()) {
                 isDefaultPortAdded = true;
@@ -120,7 +115,7 @@ public class SQLPortManager {
         PreparedStatement ps = null;
 
         try {
-            ps = plugin.SQL.getConnection().prepareStatement("UPDATE current_port SET port=" + port);
+            ps = PlayerServer.getInstance().getSQL().getConnection().prepareStatement("UPDATE current_port SET port=" + port);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
