@@ -58,7 +58,7 @@
         </repository>
     </repositories>
     <dependencies>
-        <!-- Update to latest Minecraft using BuildTools -->
+        <!-- update to latest Minecraft using BuildTools -->
         <!-- and reload pom.xml -->
         <!-- (may require updating BuildTools too) -->
         <dependency>
